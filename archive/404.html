@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en" class="mdl-js">
+
+<head>
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-6897286561966076",
+        enable_page_level_ads: true
+    });
+    </script>
+    <script>
+    (function(i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function() {
+            (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date();
+        a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+    ga('create', 'UA-97384478-1', 'auto');
+    ga('send', 'pageview');
+    </script>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" type="image/x-icon" href="file/favicon.ico" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Dublin Bus - Realtime">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <title>Dublin Bus - Realtime</title>
+    <!-- Add to homescreen for Chrome on Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="keywords" content="dublin bus,dublin,bus,transport,live,bus,timetable,timeschedule,rtpi,transport for ireland,dublin bu slive,ireland,last bus, dublin realtime, realtime, bus realtime">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Dublin Bus - Realtime">
+    <meta name="msapplication-TileColor" content="#3372DF">
+
+    <meta property="og:title" content="Dublin Bus Realtime Info"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:url" content="dublinbus.info"/>
+    <meta property="og:image" content="file/card.jpg"/>
+    <meta property="og:site_name" content="Dublin Bus Realtime Info - Live Bus Departures anywhere"/>
+
+    <link rel="stylesheet" href="autocomplete/easy-autocomplete.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-yellow.min.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="extra.css">
+    <link rel="stylesheet" href="jquery/jquery-ui.structure.min.css">
+    <link rel="stylesheet" href="jquery/jquery-ui.theme.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="autocomplete/jquery.easy-autocomplete.js"></script>
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+</head>
+
+<body>
+    <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+        <div class="mdl-tabs__panel is-active">
+            <div class="mdl-container mdl-grid">
+                <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
+                <div class="mdl-content mdl-color--white mdl-shadow--0dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">
+                    <div class="mdl-crumbs mdl-color-text--grey-500">
+                        <div class="stop-card-wide mdl-card mdl-shadow--2dp">
+                            <div class="mdl-card__title">
+                                <h2 class="mdl-card__title-text" id="bus_stop_name" style="color: #FFEB3B;"><span class="remove" id="initial_stop_name"><strong>404</strong> Not found</span></h2>
+                            </div>
+                            <div class="mdl-card__supporting-text" id="bus_info">
+                            Sorry! <a href="index.html" style="color: #2196F3;">Go back</a>
+                            </div>
+                            <div class="mdl-card__actions mdl-card--border">
+                                <div id="chips"></div>
+                                <div style="float: right;" id="links"></div>
+                            </div>
+                            <div class="mdl-card__menu">
+                            </div>
+                        </div>
+                        <p style="font-size: 10px;">Live data provided by RTPI.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
