@@ -1,3 +1,4 @@
+// EVENT LISTENERS
 $(document).ready(function() {
     $body = $("body");
     var a;
@@ -15,10 +16,9 @@ $(document).ready(function() {
             triageInput($("#input").val());
         }
     });
-
-
 });
 
+// TRIAGE INPUT
 function triageInput(input) {
     input = input;
     var regex = /^[a-zA-Z]+$/;
@@ -29,13 +29,14 @@ function triageInput(input) {
     }
 }
 
+// IF INPUT IS ADDRESS
 function addressSearch() {
     input = $("#input2").val();
     geocodeAddress(input)
 }
 
-function geocodeAddress(a) {
-    address = a + ", Dublin, Ireland";
+function geocodeAddress(input) {
+    address = input + ", Dublin, Ireland";
     (new google.maps.Geocoder).geocode({
         address: address
     }, function(a, b) {
@@ -43,6 +44,7 @@ function geocodeAddress(a) {
     })
 }
 
+// CREATE MODAL
 function chooseStop(a, c) {
     $("#overlay").addClass("map_overlay");
     $("#stop_picker").dialog("open");
@@ -59,33 +61,8 @@ function chooseStop(a, c) {
     $("#stop_picker").append($("<div id='stoppickermap' class='remove' style='height: 100%; width:100%;'></div>"));
     getStopPickerMap(a, c)
 }
-var mapstyles = [{
-        "featureType": "poi.business",
-        "stylers": [{
-            "visibility": "off"
-        }]
-    },
-    {
-        "featureType": "road",
-        "elementType": "labels.icon",
-        "stylers": [{
-            "visibility": "off"
-        }]
-    },
-    {
-        "featureType": "transit",
-        "stylers": [{
-            "visibility": "on"
-        }]
-    },
-    {
-        "featureType": "water",
-        "stylers": [{
-            "color": "#2196f3"
-        }]
-    }
-];
 
+// CREATE MAP FOR MODAL
 function getStopPickerMap(a, c) {
     var b, d = new google.maps.LatLng(a, c);
     b = new google.maps.Map(document.getElementById("stoppickermap"), {
@@ -97,7 +74,7 @@ function getStopPickerMap(a, c) {
     var f;
     $.each(bus_stops_extd, function(a, e) {
         busstop_pos = new google.maps.LatLng(e.lat, e.lng);
-        if (300 > google.maps.geometry.spherical.computeDistanceBetween(busstop_pos, d)) {
+        if (650 > google.maps.geometry.spherical.computeDistanceBetween(busstop_pos, d)) {
             var c = e.routes.split(","),
                 g = "";
             $.each(c.slice(0, 10), function(a, b) {
@@ -129,6 +106,73 @@ function getStopPickerMap(a, c) {
     })
 }
 
+// SELECT STOP
+function clickThroughToStop(a) {
+    refresh();
+    getBusInfo(a);
+    getStopInfo(a)
+}
+
+// GET RT BUS INFO
+function getBusInfo(a) {
+    $.getJSON("https://bvcors.herokuapp.com/https://data.dublinked.ie/cgi-bin/rtpi/realtimebusinformation?stopid=" + a + "&format=json?callback?", function(json) {
+        if (json.errorcode == 0) {
+            processBusData(json)
+        } else {
+            console.log("failed to retrieve stop info")
+        }
+    });
+}
+function processBusData(a) {
+    console.log(a);
+    $("#bus_info").html('<span id="stop_number">Stop Number: ' + a.stopid + '</span><div class="mdl-layout-spacer"></div><div class="mdl-layout-spacer"></div><div>Last updated: ' + a.timestamp + "</div");
+    $("#results_table").append($("<div id='response'></div>"));
+    "No Results" == a.errormessage && (console.log(a.errormessage), $("#row_results").append($('<tr><td colspan="3" style="text-align:center; ">No busses found! \u2639</td></tr>')));
+    $.each(a.results, function(a, b) {
+        duetime_suffix = "Due" !=
+            b.duetime ? " min" : "";
+        retard = b.duetime - b.departureduetime;
+        $("#row_results").append($('<tr><td class="mdl-data-table__cell--non-numeric">' + b.route + '</td><td class="mdl-data-table__cell--non-numeric">' + b.destination + '</td><td class="mdl-data-table__cell--non-numeric">' + b.duetime + "" + duetime_suffix + "</td></tr>"))
+    })
+}
+
+// GET STOP INFO
+function getStopInfo(a) {
+    $.getJSON("https://bvcors.herokuapp.com/https://data.dublinked.ie/cgi-bin/rtpi/busstopinformation?stopid=" + a + "&format=json?callback?", function(json) {
+        if (json.errorcode == 0) {
+            processStopData(json)
+        } else {
+            console.log("failed to retrieve stop info")
+        }
+    });
+}
+function processStopData(a) {
+    "No Results" == a.errormessage && (console.log(a.errormessage), $("#bus_stop_name").append($('<span id="stop_name">Not found.</span>')));
+    $.each(a.results, function(a, b) {
+        stop_name = "" != b.shortname ? b.shortname : "Not found.";
+        $("#bus_stop_name").append($('<span id="stop_name"><strong>' + stop_name + '</strong></span><span class="remove" style="margin-left: 5px"><button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" onclick="clickThroughToStop(' + b.stopid + ')"><i class="material-icons">refresh</i></button></span>'));
+        $("#topleft").append($('<div class="searchbox2 remove"><input class="searchfield2" placeholder="Search" type="text" id="input2"></div>'))
+        lat = parseFloat(b.latitude);
+        lng = parseFloat(b.longitude);
+        drawMap(lat, lng);
+        maps_url = "https://www.google.ie/maps/?q=" + b.latitude + "," + +b.longitude;
+        maps_html = "<button class='remove mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect' onclick=\"window.location.href='" +
+            maps_url + "'\"><i class='material-icons'>directions</i></button>";
+        $("#links").append($(maps_html));
+        $.each(b.operators, function(a, b) {
+            $.each(b.routes, function(a, b) {
+                $("#chips").append($('<span class="mdl-chip chip" style="margin:3px; background-color:#FFEB3B;"><span class="mdl-chip__text">' + b + "</span></span>"))
+            })
+        })
+        $("#input2").keypress(function(a) {
+            if (a.keyCode == 13) {
+                triageInput($("#input2").val());
+            }
+        });
+    })
+}
+
+// DRAW MAP
 function drawMap(a, c) {
     $("#map").height(176);
     var b = {
@@ -150,6 +194,7 @@ function drawMap(a, c) {
     d.panTo(b)
 }
 
+// REFRESH UI
 function refresh() {
     $(".remove").remove();
     $("#results_table").remove();
@@ -163,125 +208,29 @@ function refresh() {
     $("#results_body").append(results_table)
 }
 
-function clickThroughToStop(a) {
-    refresh();
-    getBusInfo(a);
-    getStopInfo(a)
-}
-
-function getBusInfo(a) {
-    $.ajax({
-        type: "GET",
-        url: "https://data.dublinked.ie/cgi-bin/rtpi/realtimebusinformation?stopid=" + a + "&format=json",
-        dataType: "json",
-        success: processBusData,
-        error: function() {
-            console.log("failed to retrieve bus info")
-        }
-    })
-}
-
-function getStopInfo(a) {
-    $.ajax({
-        type: "GET",
-        url: "https://data.dublinked.ie/cgi-bin/rtpi/busstopinformation?stopid=" + ("" != a ? a : 0) + "&format=json",
-        dataType: "json",
-        success: processStopData,
-        error: function() {
-            console.log("failed to retrieve stop info")
-        }
-    })
-}
-
-function getRouteInfo(a) {
-    $.ajax({
-        type: "GET",
-        url: "https://data.dublinked.ie/cgi-bin/rtpi/routeinformation?routeid=" + a + "&operator=bac&format=json",
-        dataType: "json",
-        success: processRouteData,
-        error: function() {
-            console.log("failed to retrieve route info")
-        }
-    })
-}
-
-function processBusData(a) {
-    console.log(a);
-    $("#bus_info").html('<span id="stop_number">Stop Number: ' + a.stopid + '</span><div class="mdl-layout-spacer"></div><div class="mdl-layout-spacer"></div><div>Last updated: ' + a.timestamp + "</div");
-    $("#results_table").append($("<div id='response'></div>"));
-    "No Results" == a.errormessage && (console.log(a.errormessage), $("#row_results").append($('<tr><td colspan="3" style="text-align:center; ">No busses found! \u2639</td></tr>')));
-    $.each(a.results, function(a, b) {
-        duetime_suffix = "Due" !=
-            b.duetime ? " min" : "";
-        retard = b.duetime - b.departureduetime;
-        $("#row_results").append($('<tr><td class="mdl-data-table__cell--non-numeric">' + b.route + '</td><td class="mdl-data-table__cell--non-numeric">' + b.destination + '</td><td class="mdl-data-table__cell--non-numeric">' + b.duetime + "" + duetime_suffix + "</td></tr>"))
-    })
-}
-
-function processStopData(a) {
-    "No Results" == a.errormessage && (console.log(a.errormessage), $("#bus_stop_name").append($('<span id="stop_name">Not found.</span>')));
-    $.each(a.results, function(a, b) {
-        stop_name = "" != b.shortname ? b.shortname : "Not found.";
-        $("#bus_stop_name").append($('<span id="stop_name"><strong>' + stop_name + '</strong></span><span class="remove" style="margin-left: 5px"><button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" onclick="clickThroughToStop(' + b.stopid + ')"><i class="material-icons">refresh</i></button></span>'));
-        $("#topleft").append($('<div class="searchbox2 remove"><input class="searchfield2" placeholder="Search" type="text" id="input2"></div>'))
-        lat = parseFloat(b.latitude);
-        lng = parseFloat(b.longitude);
-        drawMap(lat, lng);
-        maps_url = "https://www.google.ie/maps/?q=" + b.latitude + "," + +b.longitude;
-        maps_html = "<button class='remove mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect' onclick=\"window.location.href='" +
-            maps_url + "'\"><i class='material-icons'>directions</i></button>";
-        $("#links").append($(maps_html));
-        $.each(b.operators, function(a, b) {
-            $.each(b.routes, function(a, b) {
-                $("#chips").append($('<span class="mdl-chip chip" style="margin:3px; background-color:#FFEB3B;" onclick="listenToChips(\'' + b + '\')"><span class="mdl-chip__text">' + b + "</span></span>"))
-            })
-        })
-        $("#input2").keypress(function(a) {
-            if (a.keyCode == 13) {
-                triageInput($("#input2").val());
-            }
-        });
-    })
-}
-
-function listenToChips(a) {
-    loader = '<div class="mdl-spinner mdl-spinner--single-color mdl-js-spinner is-active"></div>';
-    getRouteInfo(a)
-}
-
-function processRouteData(a) {
-    $("#dialog").dialog("open");
-    var c = .95 * $(window).width(),
-        b = .95 * $(window).height();
-    $("#dialog").dialog({
-        autoOpen: !1,
-        modal: !0,
-        width: c,
-        height: b,
-        close: function() {
-            $(".route_results").remove()
-        }
-    });
-    $("#tabs").tabs();
-    route1_results_table = '<table id="route1_results_table" class="route_results mdl-data-table mdl-js-data-table mdl-shadow--2dp" style="width:100%;"><thead><tr><th>Stop ID</th><th class="mdl-data-table__cell--non-numeric">Stop name</th></tr></thead><tbody id="route1_results"></tbody></table>';
-    route2_results_table = '<table id="route2_results_table" class="route_results mdl-data-table mdl-js-data-table mdl-shadow--2dp" style="width:100%;"><thead><tr><th>Stop ID</th><th class="mdl-data-table__cell--non-numeric">Stop name</th></tr></thead><tbody id="route2_results"></tbody></table>';
-    $("#tabs-1").append(route1_results_table);
-    $("#tabs-2").append(route2_results_table);
-    tab_1 = a.results[0];
-    $.each(tab_1.stops, function(a, b) {
-        $("#route1_results_table").append($("<tr><td>" + b.displaystopid + '</td><td class="mdl-data-table__cell--non-numeric">' +
-            b.fullname + "</td></tr>"))
-    });
-    tab_2 = a.results[1];
-    $.each(tab_2.stops, function(a, b) {
-        $("#route2_results_table").append($("<tr><td>" + b.displaystopid + '</td><td class="mdl-data-table__cell--non-numeric">' + b.fullname + "</td></tr>"))
-    });
-    $("#route1_results_table tr").click(function() {
-        var a = $(this).closest("tr").find("td:first").text();
-        clickThroughToStop(a)
-    });
-    $("#route2_results_table tr").click(function() {
-        var a = $(this).closest("tr").find("td:first").text();
-        clickThroughToStop(a)
-    })
-};
+var mapstyles = [{
+        "featureType": "poi.business",
+        "stylers": [{
+            "visibility": "off"
+        }]
+    },
+    {
+        "featureType": "road",
+        "elementType": "labels.icon",
+        "stylers": [{
+            "visibility": "off"
+        }]
+    },
+    {
+        "featureType": "transit",
+        "stylers": [{
+            "visibility": "on"
+        }]
+    },
+    {
+        "featureType": "water",
+        "stylers": [{
+            "color": "#2196f3"
+        }]
+    }
+];
