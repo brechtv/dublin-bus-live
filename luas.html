@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en" class="mdl-js">
+    <head>
+        <meta charset="utf-8">
+        <link rel="shortcut icon" type="image/x-icon" href="file/favicon.ico" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="Dublin Bus - Bus schedule times in real time. Search by Luas stop, address or choose from a map. Optimized for web and mobile.">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+        <title>Luas - Realtime</title>
+        <!-- Add to homescreen for Chrome on Android -->
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="keywords" content="dublin Luas,dublin,Luas,transport,live,Luas,timetable,timeschedule,rtpi,transport for ireland,dublin bu slive,ireland,last Luas, dublin realtime, realtime, Luas realtime">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-title" content="Dublin Bus - Realtime">
+        <meta name="msapplication-TileColor" content="#3372DF">
+        <meta property="og:title" content="Dublin Bus Realtime Info" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="dublinLuas.info" />
+        <meta property="og:image" content="file/card2.jpg" />
+        <meta property="og:site_name" content="Dublin Bus Realtime Info - Live Bus Departures anywhere" />
+        <meta property="og:description" content="Dublin Bus schedule times in real time. Search by Luas stop, address or choose from a map. Optimized for web and mobile." />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="vendor/jquery-ui/jquery-ui.css">
+        <link rel="stylesheet" href="vendor/mdl/material.min.css">
+        <link rel="stylesheet" href="css/dbs_app.css">
+        <script defer src="js/markerclusterer.js" defer></script>
+        <script src="vendor/jquery/jquery.js"></script>
+        <script defer src="vendor/jquery-ui/jquery-ui.min.js"></script>
+        <script defer src="vendor/mdl/material.min.js"></script>
+        <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDnJ6YfjWb7bDBtJl9OyGHzJybd6C7n0Eg&libraries=geometry"></script>
+        <script>
+        (function(i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function() {
+        (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date();
+        a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+        ga('create', 'UA-97384478-1', 'auto');
+        ga('send', 'pageview');
+        </script>
+        <!-- Google Tag Manager -->
+        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-W35NWQ7');</script>
+        <!-- End Google Tag Manager -->
+    </head>
+    <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W35NWQ7"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+        <div id="stop_picker" title=""></div>
+        <div id="loading" class="modal" style="text-align: center;">
+            <span style="color: #3F51B5;">Fetching real-time data...</span>
+        </div>
+        <div id="overlay" class="remove"></div>
+        <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+            <div class="mdl-container mdl-grid">
+                <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
+                <div class="mdl-content mdl-shadow--0dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">
+                    <div class="mdl-crumbs mdl-color-text--grey-500">
+                        <div class="stop-card-wide mdl-card mdl-shadow--2dp">
+                            <div class="mdl-card__title">
+                                <h2 class="mdl-card__title-text" id="luas_stop_name" style="color: #3F51B5; background-color: white; padding: 10px; border-radius: 5px;"><span class="remove" id="initial_stop_name"><strong>Luas</strong> Realtime</span></h2>
+                            </div>
+                            <div class="mdl-card__supporting-text " id="luas_info">
+                                <div class="smurf">
+                                    <input class="searchbox mdl-textfield__input" type="text" id="input" placeholder="Search for a Luas stop">
+                                    <div class="mdl-tooltip mdl-tooltip--right" data-mdl-for="input">
+                                        Pick a stop<br>from the dropdown!
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mdl-card__actions mdl-card--border">
+                                <p class="remove" style="font-size: 12px;">Search by Luas stop name. For example: <i>"Hospital"</i> or <i>"Abbey Street"</i>, or click on a Luas stop below.</p>
+                                <div id="chips"></div>
+                                <div style="float: right;" id="links"><a class="remove" href="index.html" style="color: #959595;"><i class="material-icons">directions_bus</i></div></a>
+                            </div>
+                            <div id="topleft" class="mdl-card__menu">
+                                <button id="demo-menu-lower-right"
+                                class="mdl-button mdl-js-button mdl-button--icon">
+                                <i class="material-icons">more_vert</i>
+                                </button>
+                                <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
+                                    for="demo-menu-lower-right">
+                                    <a class="mdl-menu__item" href="index.html">Dublin Bus Live</a>
+                                    <a disabled class="mdl-menu__item" href="luas.html">Luas Live</a>
+                                    <a class="mdl-menu__item" href="mapsearch.html">Map Search</a>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="map" class="mdl-shadow--2dp"></div>
+                    <div id="results_body"></div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script>
+    $(function() {
+    $("#stop_picker").dialog({
+    autoOpen: false,
+    });
+    });
+    </script>
+    <script async src="js/luas_stops.js"></script>
+    <script async src="js/luas.js"></script>
+    <script>
+    $(function() {
+        var stops = [
+            "Broombridge",
+            "Cabra",
+            "Phibsborough",
+            "Grangegorman",
+            "Broadstone - DIT",
+            "Dominick",
+            "Parnell",
+            "Marlborough",
+            "Trinity",
+            "O'Connell Upper",
+            "O'Connell - GPO",
+            "Westmoreland",
+            "Dawson",
+            "Tallaght",
+            "Hospital",
+            "Cookstown",
+            "Belgard",
+            "Kingswood",
+            "Red Cow",
+            "Kylemore",
+            "Bluebell",
+            "Blackhorse",
+            "Drimnagh",
+            "Goldenbridge",
+            "Suir Road",
+            "Rialto",
+            "Fatima",
+            "James's",
+            "Heuston",
+            "Museum",
+            "Smithfield",
+            "Four Courts",
+            "Jervis",
+            "Abbey Street",
+            "Busáras",
+            "Connolly",
+            "St. Stephen's Green",
+            "Harcourt",
+            "Charlemont",
+            "Ranelagh",
+            "Beechwood",
+            "Cowper",
+            "Milltown",
+            "Windy Arbour",
+            "Dundrum",
+            "Balally",
+            "Kilmacud",
+            "Stillorgan",
+            "Sandyford",
+            "Central Park",
+            "Glencairn",
+            "The Gallops",
+            "Leopardstown Valley",
+            "Ballyogan Wood",
+            "Racecourse",
+            "Carrickmines",
+            "Brennanstown",
+            "Laughanstown",
+            "Cherrywood",
+            "Brides Glen",
+            "Fettercairn",
+            "Cheeverstown",
+            "Citywest Campus",
+            "Fortunestown",
+            "Saggart",
+            "George's Dock",
+            "Mayor Square - NCI",
+            "Spencer Dock",
+            "The Point",
+            "Depot",
+            "Scheme"
+        ]
+        $("#input").autocomplete({
+            source: stops,
+            select: function(event, ui) {
+                if (ui.item) {
+                    triageInput(ui.item.value)
+                }
+            }
+        })
+
+
+        stops.sort();
+        $("#chips").empty()
+        $.each(stops, function(i, stop) {
+            if (i < 5) {
+                x = $(`<span class="mdl-chip chip"><span class="mdl-chip__text">` + stop + `</span></span>`)
+                $("#chips").append(x)
+                $(x).click(function() {
+                    triageInput(stop)
+                });
+
+            } else {
+                x = $(`<span class="hidden_stops mdl-chip chip"><span class="mdl-chip__text">` + stop + `</span></span>`)
+                $("#chips").append(x)
+                x.hide()
+                $(x).click(function() {
+                    triageInput(stop)
+                });
+            }
+        })
+
+        moar = $(`<span class="mdl-chip chip moar-chip"  onclick="$('.hidden_stops').show(); $('.moar-chip').remove();"><span class="mdl-chip__text">See all stops ...</span></span>`)
+        $("#chips").append(moar)
+
+    })
+
+    </script>
+</html>

@@ -1,131 +1,193 @@
 <!doctype html>
 <html lang="en" class="mdl-js">
-<head>
-    <meta charset="utf-8">
-    <link rel="shortcut icon" type="image/x-icon" href="file/favicon.ico" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="Dublin Bus - Bus schedule times in real time. Search by bus stop, address or choose from a map. Optimized for web and mobile.">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
-    <title>Dublin Bus - Realtime</title>
-    <!-- Add to homescreen for Chrome on Android -->
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="keywords" content="dublin bus,dublin,bus,transport,live,bus,timetable,timeschedule,rtpi,transport for ireland,dublin bu slive,ireland,last bus, dublin realtime, realtime, bus realtime">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="Dublin Bus - Realtime">
-    <meta name="msapplication-TileColor" content="#3372DF">
-    <meta property="og:title" content="Dublin Bus Realtime Info" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="dublinbus.info" />
-    <meta property="og:image" content="file/card2.jpg" />
-    <meta property="og:site_name" content="Dublin Bus Realtime Info - Live Bus Departures anywhere" />
-    <meta property="og:description" content="Dublin Bus schedule times in real time. Search by bus stop, address or choose from a map. Optimized for web and mobile." />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-yellow.min.css">
-    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
-    <link rel="stylesheet" href="extra.css">
-    <script src="stops.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDnJ6YfjWb7bDBtJl9OyGHzJybd6C7n0Eg&libraries=geometry"></script>
-    <script>
-    (function(i, s, o, g, r, a, m) {
+    <head>
+        <meta charset="utf-8">
+        <link rel="shortcut icon" type="image/x-icon" href="file/favicon.ico" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="Dublin Bus - Bus schedule times in real time. Search by bus stop, address or choose from a map. Optimized for web and mobile.">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+        <title>Dublin Bus - Live</title>
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="keywords" content="dublin bus,dublin,bus,transport,live,bus,timetable,timeschedule,rtpi,transport for ireland,dublin bu slive,ireland,last bus, dublin realtime, realtime, bus realtime">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-title" content="Dublin Bus - Live">
+        <meta name="msapplication-TileColor" content="#3372DF">
+        <meta property="og:title" content="Dublin Bus Live Info" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="dublinbus.info" />
+        <meta property="og:image" content="file/card2.jpg" />
+        <meta property="og:site_name" content="Dublin Bus Live Info - Live Bus Departures anywhere" />
+        <meta property="og:description" content="Dublin Bus schedule times in real time. Search by bus stop, address or choose from a map. Optimized for web and mobile." />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="vendor/jquery-ui/jquery-ui.css">
+        <link rel="stylesheet" href="vendor/mdl/material.min.css">
+        <link rel="stylesheet" href="css/dbs_app.css">
+        <script defer src="js/markerclusterer.js" defer></script>
+        <script src="vendor/jquery/jquery.js"></script>
+        <script defer src="vendor/jquery-ui/jquery-ui.min.js"></script>
+        <script defer src="vendor/mdl/material.min.js"></script>
+        <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDnJ6YfjWb7bDBtJl9OyGHzJybd6C7n0Eg&libraries=geometry"></script>
+        <script defer src="vendor/infobox/infobox.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/5.2.0/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/5.2.0/firebase-firestore.js"></script>
+        <script>
+        (function(i, s, o, g, r, a, m) {
         i['GoogleAnalyticsObject'] = r;
         i[r] = i[r] || function() {
-            (i[r].q = i[r].q || []).push(arguments)
+        (i[r].q = i[r].q || []).push(arguments)
         }, i[r].l = 1 * new Date();
         a = s.createElement(o),
-            m = s.getElementsByTagName(o)[0];
+        m = s.getElementsByTagName(o)[0];
         a.async = 1;
         a.src = g;
         m.parentNode.insertBefore(a, m)
-    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-    ga('create', 'UA-97384478-1', 'auto');
-    ga('send', 'pageview');
-    </script>
-</head>
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+        ga('create', 'UA-97384478-1', 'auto');
+        ga('send', 'pageview');
+        </script>
+        <!-- Google Tag Manager -->
+        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-W35NWQ7');</script>
+        <!-- End Google Tag Manager -->
+    </head>
 <body>
-    <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
-        <div class="mdl-tabs__panel is-active">
-            <div class="mdl-container mdl-grid">
-                <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
-                <div class="mdl-content mdl-shadow--0dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">
-                    <div class="mdl-crumbs mdl-color-text--grey-500">
-                        <div class="stop-card-wide mdl-card mdl-shadow--2dp">
-                            <div class="mdl-card__title">
-                                <h2 class="mdl-card__title-text" id="bus_stop_name" style="color: #FFEB3B;"><span class="remove" id="initial_stop_name"><strong>Dublin Bus</strong> Realtime</span></h2>
-                            </div>
-                            <div class="mdl-card__supporting-text" id="bus_info">
-                                <div class="searchbox">
-                                    <input class="searchfield" placeholder="Enter a stop ID or address" type="text" id="input">
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W35NWQ7"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+    <div id="progressbar" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
+    <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect" style="flex: 1 0 auto">
+        <div class="mdl-container mdl-grid">
+            <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
+            <div class="mdl-content mdl-shadow--0dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">
+                <div class="mdl-crumbs mdl-color-text--grey-500">
+                    <div class="stop-card-wide mdl-card mdl-shadow--2dp">
+                        <div class="mdl-card__title">
+                            <h2 class="mdl-card__title-text" id="bus_stop_name" style="color: #3F51B5; background-color: white; padding: 10px; border-radius: 5px;"><span class="remove" id="initial_stop_name"><strong>Dublin Bus</strong> Realtime</span></h2>
+                        </div>
+                        <div class="mdl-card__supporting-text" id="bus_info">
+                            <div class="searchboxo">
+                                <input class="searchbox mdl-textfield__input" type="text" id="input" placeholder="Search for a Stop ID or address">
+                                <div class="mdl-tooltip mdl-tooltip--right" data-mdl-for="input">
+                                    Any search<br>input works!
                                 </div>
                             </div>
-                            <div class="mdl-card__actions mdl-card--border">
-                                <p class="remove" style="font-size: 12px;">Search by address or bus stop ID. For example: <i>"1, Howth Road"</i>, <i>"Talbot St" or "611"</i></p>
-                                <div id="chips"></div>
-                                <div style="float: right;" id="links"></div>
-                            </div>
-                            <div id="topleft" class="mdl-card__menu">
-                            </div>
-                        </div>
-                        <div id="map" class="mdl-shadow--2dp"></div>
-                        <div id="results_body"></div>
-                    </div>
-                    <div class="stop-card-wide mdl-card mdl-shadow--2dp remove">
-                        <div class="mdl-card__supporting-text">
-                            <h4>How to use</h4>
-                            <ul>
-                                <li>Dublin Bus Realtime lets you find the <strong>live departures</strong> for any bus stop in Dublin. Search by bus stop (<i>e.g. 51</i>) or by address (<i>e.g. 2, Dorset St</i>).</li>
-                                <li>Enter the <strong>bus stop ID</strong> into the search bar and hit enter. The bus stop ID - or stop no. - &nbsp;is shown on the bus stop pole. Searching the stop ID will return the live departure times from that bus stop.</li>
-                                <li>Alternatively, you can <strong>search for an address</strong> and get the closest bus stops. Example: searching for "Talbot St" will retrieve all bus stops in a radius of 500 meter. Clicking on the bus stop will fetch the real time departures for that bus stop.</li>
-                            </ul>
-                        </div>
-                        <div class="mdl-card__menu">
-                            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" onclick='$(this).parent().parent().remove();''>
-                                <i class="material-icons md-dark">close</i>
-                            </button>
-                        </div>
-                    </div>
-<!--                     <div class="stop-card-wide mdl-card mdl-shadow--2dp whatsnew remove">
-                        <div class="mdl-card__supporting-text">
-                            <h4>What's new?</h4>
-                            <ul>
-                                <li>New material cards interface, loading animations when fetching live data from API.</li>
-                                <li>Bus chips for every stop, upon clicked, all bus stops for that route will be shown. Clicking on another bus stop will redirect to live data for that particular bus stop.</li>
-                                <li>Autocomplete functionality for searching bus stops (currently only triggered for numeric values).</li>
-                                <li>Maps link for the relevant bus stop.</li>
-                                <li>Mobile improvements.</li>
-                            </ul>
                         </div>
                         <div class="mdl-card__actions mdl-card--border">
-                            <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="https://www.nationaltransport.ie/">
-                                    Data provided by the National Transport Authority
+                            <p class="remove" style="font-size: 12px;">Search by address or bus stop ID. For example: <i>"1, Howth Road"</i>, <i>"Talbot St" or "611"</i>, select a recent bus stop or use your location to see bus stops near you.</p>
+                            <div id="chips"></div>
+                            <div style="float: right;" id="links">
+                                <a class="remove" href="luas.html" style="color: #959595;">
+                                    <i class="material-icons">tram</i>
                                 </a>
+                            </div>
                         </div>
-                        <div class="mdl-card__menu">
-                            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" onclick='$(this).parent().parent().remove();''>
-                                <i class="material-icons md-dark">close</i>
+                        <div id="topleft" class="mdl-card__menu">
+                            <button style="color: white;" class="mdl-button" id="locate">
+                            <i class="material-icons">location_on</i>
                             </button>
+                            <div class="mdl-tooltip mdl-tooltip--left is-active" data-mdl-for="locate">
+                                Find bus stops<br>nearby your location
+                            </div>
+                            <button id="demo-menu-lower-right"
+                            class="mdl-button mdl-js-button mdl-button--icon">
+                            <i class="material-icons">more_vert</i>
+                            </button>
+                            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
+                                for="demo-menu-lower-right">
+                                <a disabled class="mdl-menu__item" href="index.html">Dublin Bus Live</a>
+                                <a class="mdl-menu__item" href="luas.html">Luas Live</a>
+                                <a class="mdl-menu__item" href="mapsearch.html">Map Search</a>
+                            </ul>
                         </div>
-                    </div> -->
+                    </div>
+                    <div class="announce-card-wide mdl-card mdl-shadow--2dp remove">
+                        <div class="mdl-card__actions mdl-card--border" id="locate_banner">
+                            <h2 class="mdl-card__title-text" style="padding: 10px; border-radius: 5px;"><span class="remove" id=""><span style="color: rgba(239,83,80, 0.8); background-color: white; padding: 10px; border-radius: 5px; margin-right: 10px; text-decoration-color: : rgba(239,83,80, 0.8);">New</span>Stops <strong>near me</strong><i class="material-icons">location_on</i><span class="remove" id=""></span></h2>
+                        </div>
+                    </div>
+                    <section class="remove news-card-wide section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
+                        <header class="newsheader mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet mdl-cell--4-col-phone mdl-color--teal-100 mdl-color-text--white">
+                        </header>
+                        <div class="mdl-card mdl-cell mdl-cell--9-col-desktop mdl-cell--6-col-tablet mdl-cell--4-col-phone">
+                            <div class="mdl-card__supporting-text">
+                                <h4>New Features</h4>
+                                <ul>
+                                    <li><strong>Location search</strong> is now available! Click the <i class="material-icons">location_on</i> icon to see bus stops close to you.</li>
+                                    <li><strong>Map Search</strong> is now available, allowing you to zoom in to the Dublin area and see all bus stops. Handy if you don't know the address.</li>
+                                    <li><strong>Luas Search</strong> has been improved and new Green Line stops have been added.</li>
+                                    <li>Clicking on a route number on a bus stop page now shows the route on the map!</li>
+                                </ul>
+                            </div>
+                            <div class="mdl-card__supporting-text">
+                            </div>
+                        </div>
+                    </section>
+                    <div class="announce-card-wide mdl-card mdl-shadow--2dp remove">
+                        <a class="mdl-card__actions mdl-card--border" id="luas_link" href="luas.html">
+                            <h2 class="mdl-card__title-text" style="padding: 10px; border-radius: 5px;"><span class="remove" id=""><strong>Luas</strong> Search</span> <span style="color: rgba(239,83,80, 0.8); margin-left: 10px; text-decoration-color: : rgba(239,83,80, 0.8);">(Beta)</span></h2>
+                        </a>
+                        <div class="mdl-card__actions mdl-card--border" style="font-size: 14px">Showing realtime Luas times so you're always on time for Bohs kickoff</div>
+                    </div>
+                    <div class="announce-card-wide mdl-card mdl-shadow--2dp remove">
+                        <!-- <div class="mdl-card__supporting-text">New!</div> -->
+                        <a class="mdl-card__actions mdl-card--border" id="maps_link" href="mapsearch.html">
+                            <h2 class="mdl-card__title-text" style="padding: 10px; border-radius: 5px;"><span class="remove" id=""><strong>Map Search</strong> for Dublin Bus</span></h2>
+                        </a>
+                        <div class="mdl-card__actions mdl-card--border" style="font-size: 14px">In case you ever get lost in Crumlin again</div>
+                    </div>
+                                        <section class="remove news-card-wide section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
+                        <div class="mdl-card mdl-cell mdl-cell--12-col">
+                            <div class="mdl-card__supporting-text">
+                                <h4>We're on Firebase now!</h4>
+                                <ul>
+                                    <li><strong>Serverless</strong> - meaning I don't need to pay server costs and I can blame Google if it ever goes down. Or if I don't pay the domain cost. In that case, just use <i>dublinbuslive.firebaseapp.com</i></li>
+                                    <li><strong>Secure</strong> - SSL certified. No data is collected anyway (recent bus stops is saved in your browser storage only), but safer nonetheless.</li>
+                                    <li><strong>No ads</strong> - like, <i>ever</i>. Also this thing has like 20 something active users, so I wouldn't make money off this anyway.</li>
+                                 </ul>
+                            </div>
+                            <div class="mdl-card__supporting-text">
+                            </div>
+                        </div>
+                    </section>
+                    <div class="announce-card-wide mdl-card mdl-shadow--2dp remove">
+                        <div class="mdl-card__actions mdl-card--border" id="feedback">
+                            <input id="feedback_input" class="mdl-textfield__input" placeholder="Drop us a line of feedback">
+                        </div>
+                    </div>
+                    <div id="map" class="mdl-shadow--2dp"></div>
+                    <div id="results_body"></div>
                 </div>
             </div>
         </div>
     </div>
-    <script>
-    $(function() {
-        $("#stop_picker").dialog({
-            autoOpen: false,
-        });
-    });
-    </script>
     <div id="stop_picker" title=""></div>
-    <div id="loading" class="modal" style="text-align: center;">
-        <span style="color: #3F51B5;">Fetching real-time data...</span>
-    </div>
-    <div id="overlay" class="remove"></div>
-    <script async src="script.js"></script>
+</main>
+<div class="footer">Made with absolutely no love and only for myself</div>
 </body>
+<script>
+$("#feedback_input").keypress(function(a) {
+if (a.keyCode == 13) {
+val = $("#feedback_input").val();
+$.post( "https://hooks.zapier.com/hooks/catch/2756301/g2iax4/", { "message": val })
+fbw(val, "feedback")
+$("#feedback_input").val("Sent!");
+}
+});
+$(function() {
+$("#stop_picker").dialog({
+autoOpen: false
+});
+});
+</script>
+<script defer src="js/dbs_firebase.js"></script>
+<script defer src="js/dbs_quicklook.js" defer></script>
+<script defer src="js/dbs_stops.min.js"></script>
+<script defer src="js/dbs_app.js"></script>
+<script defer src="js/dbs_locate.js"></script>
 
 </html>
