@@ -1,0 +1,6 @@
+.DS_Store
+firebase.json
+sitemap.xml
+storage.rules
+file/
+vendor/
